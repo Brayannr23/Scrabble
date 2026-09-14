@@ -1,0 +1,72 @@
+// Scores two Scrabble words and reports which player wins.
+// CS50 Problem Set 2 - Scrabble
+
+#include <cs50.h>
+#include <ctype.h>
+#include <stdio.h>
+#include <string.h>
+
+int compute_score(string word);
+
+// Standard Scrabble letter values, indexed A=0 through Z=25.
+// POINTS[0] is the value of 'A', POINTS[1] is the value of 'B', etc.
+const int POINTS[26] = {
+    1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3,
+    1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10
+};
+
+int main(void)
+{
+    // Get one word from each player.
+    string word1 = get_string("Player 1: ");
+    string word2 = get_string("Player 2: ");
+
+    // Score each word using the same function, no duplicated loop.
+    int score1 = compute_score(word1);
+    int score2 = compute_score(word2);
+
+    // Compare and report the result.
+    if (score1 > score2)
+    {
+        printf("Player 1 wins!\n");
+    }
+    else if (score2 > score1)
+    {
+        printf("Player 2 wins!\n");
+    }
+    else
+    {
+        printf("Tie!\n");
+    }
+}
+
+// Adds up the point value of every letter in word; non-letters score 0.
+int compute_score(string word)
+{
+    int score = 0;
+
+    // for each character in the word
+    for (int i = 0, n = strlen(word); i < n; i++)
+    {
+        char c = word[i];
+
+        // Only letters have a point value; spaces, digits, and
+        // hyphens fall through and contribute nothing.
+        if (isalpha(c))
+        {
+            // Force to uppercase so 'a' and 'A' behave the same way.
+            char upper = toupper(c);
+
+            // 'A' is 65 in ASCII, 'B' is 66, and so on, so subtracting
+            // 'A' from any uppercase letter gives its position in the
+            // alphabet starting at 0. That position is exactly the
+            // index we need into POINTS.
+            int index = upper - 'A';
+
+            score += POINTS[index];
+        }
+        // else: not a letter, add 0 (i.e., do nothing)
+    }
+
+    return score;
+}
